@@ -42,10 +42,8 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<'dashboard' | 'freelancers' | 'tasks' | 'invoices' | 'audit'>('dashboard');
   const [userRole, setUserRole] = useState<'agency' | 'freelancer'>('agency');
 
-  // Multi-Entity Global Office Selector para a Agência
   const [agencyEntity, setAgencyEntity] = useState<'US Delaware HQ' | 'UK Branch' | 'EU Entity'>('US Delaware HQ');
 
-  // Estados principais do contratado
   const [taxData, setTaxData] = useState({
     name: 'Ana Silva',
     taxId: 'US-987654321',
@@ -55,15 +53,13 @@ export default function App() {
     category: 'UI/UX Designer',
     rating: 4.9,
     completedProjects: 24,
-    twoFactorEnabled: true, // 2FA Security Status
+    twoFactorEnabled: true,
     weeklyCapacityHours: 40,
     loggedHoursThisWeek: 32,
   });
 
-  const [taxIdStatus, setTaxIdStatus] = useState<'idle' | 'valid' | 'invalid'>('valid');
   const [escrowBalance, setEscrowBalance] = useState(1250);
 
-  // Live Timer
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
@@ -115,7 +111,6 @@ export default function App() {
 
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('All');
 
-  // Estados para modais
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'task' | 'contractor' | 'invoice' | 'escrow'>('task');
   const [formTitle, setFormTitle] = useState('');
@@ -126,23 +121,10 @@ export default function App() {
   const [newDocName, setNewDocName] = useState('');
   const [pdfNotification, setPdfNotification] = useState<string | null>(null);
 
-  const handleTaxIdChange = (val: string) => {
-    setTaxData({ ...taxData, taxId: val });
-    if (val.length > 5) {
-      if (val.toUpperCase().startsWith('US') || val.length >= 9) {
-        setTaxIdStatus('valid');
-      } else {
-        setTaxIdStatus('invalid');
-      }
-    } else {
-      setTaxIdStatus('idle');
-    }
-  };
-
   const handleSaveTax = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaved(true);
-    setAuditLogs([{ id: Date.now().toString(), action: `Updated profile (2FA: ${taxData.twoFactorEnabled ? 'ON' : 'OFF'}, Entity/Lang: ${taxData.language})`, timestamp: 'Just now', actor: taxData.name }, ...auditLogs]);
+    setAuditLogs([{ id: Date.now().toString(), action: `Updated profile (2FA: ${taxData.twoFactorEnabled ? 'ON' : 'OFF'})`, timestamp: 'Just now', actor: taxData.name }, ...auditLogs]);
     setTimeout(() => setIsSaved(false), 3000);
   };
 
@@ -205,14 +187,12 @@ export default function App() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#09090b', color: '#f4f4f5', fontFamily: 'system-ui, sans-serif', maxWidth: '440px', margin: '0 auto', position: 'relative', borderLeft: '1px solid #27272a', borderRight: '1px solid #27272a', paddingBottom: '90px' }}>
       
-      {/* Toast Notification */}
       {pdfNotification && (
         <div style={{ position: 'fixed', top: '16px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#065f46', color: '#34d399', padding: '10px 16px', borderRadius: '12px', fontSize: '12px', fontWeight: 'bold', zIndex: 100, boxShadow: '0 10px 25px rgba(0,0,0,0.5)', border: '1px solid #34d399' }}>
           {pdfNotification}
         </div>
       )}
 
-      {/* Top Header */}
       <header style={{ padding: '16px', borderBottom: '1px solid #27272a', backgroundColor: '#09090b', position: 'sticky', top: 0, zIndex: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <div>
@@ -260,7 +240,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Global Entity & Role Switcher */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
           {userRole === 'agency' && (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#121215', padding: '4px 8px', borderRadius: '8px', border: '1px solid #27272a', fontSize: '10px' }}>
@@ -294,7 +273,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         
         {userRole === 'agency' ? (
@@ -312,7 +290,6 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Escrow Milestone Widget */}
                 <div style={{ backgroundColor: '#18181b', padding: '16px', borderRadius: '12px', border: '1px solid #27272a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <span style={{ fontSize: '10px', color: '#34d399', fontWeight: 'bold', textTransform: 'uppercase' }}>🔒 Secured Escrow Funds</span>
@@ -326,7 +303,6 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Cash Flow Forecasting */}
                 <div style={{ backgroundColor: '#18181b', padding: '16px', borderRadius: '12px', border: '1px solid #27272a' }}>
                   <h3 style={{ fontSize: '12px', fontWeight: 'bold', color: '#f4f4f5', margin: '0 0 8px 0', textTransform: 'uppercase' }}>📈 Payout Forecasting (Next 30 Days)</h3>
                   <p style={{ fontSize: '11px', color: '#a1a1aa', margin: '0 0 10px 0' }}>Estimated workload expenditure based on active tasks.</p>
@@ -360,7 +336,6 @@ export default function App() {
                   </div>
                   <p style={{ margin: 0, color: '#a1a1aa', fontSize: '11px' }}>{taxData.category} • <span style={{ color: '#34d399' }}>{currencySymbol}{taxData.rate}/h</span></p>
                   
-                  {/* Utilização Semanal de Horas */}
                   <div style={{ backgroundColor: '#18181b', padding: '8px', borderRadius: '8px', border: '1px solid #27272a' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#a1a1aa', marginBottom: '4px' }}>
                       <span>Weekly Utilization ({taxData.loggedHoursThisWeek}h / {taxData.weeklyCapacityHours}h)</span>
@@ -470,10 +445,8 @@ export default function App() {
             )}
           </>
         ) : (
-          // CONTRACTOR PORTAL
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             
-            {/* Live Time Tracker */}
             <div style={{ backgroundColor: '#18181b', padding: '16px', borderRadius: '12px', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2 style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#f4f4f5', margin: 0 }}>⏱️ Live Time Tracker</h2>
@@ -509,7 +482,6 @@ export default function App() {
               </form>
             </div>
 
-            {/* Perfil Fiscal com Configuração de 2FA e Preferências */}
             <div style={{ backgroundColor: '#18181b', padding: '16px', borderRadius: '12px', border: '1px solid #27272a' }}>
               <h2 style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', color: '#f4f4f5', margin: '0 0 12px 0' }}>⚙️ Tax, Security & Localization</h2>
               {isSaved && (
@@ -532,7 +504,7 @@ export default function App() {
                   <input 
                     type="text" 
                     value={taxData.taxId} 
-                    onChange={(e) => handleTaxIdChange(e.target.value)}
+                    onChange={(e) => setTaxData({...taxData, taxId: e.target.value})}
                     style={{ width: '100%', backgroundColor: '#09090b', border: '1px solid #27272a', borderRadius: '8px', padding: '10px', color: '#fff', boxSizing: 'border-box' }}
                   />
                 </div>
@@ -603,7 +575,6 @@ export default function App() {
 
       </main>
 
-      {/* Modal Interativo */}
       {isModalOpen && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 50, padding: '16px' }}>
           <div style={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '16px', padding: '20px', width: '100%', maxWidth: '380px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)' }}>
@@ -694,7 +665,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Floating Bottom Navigation */}
       {userRole === 'agency' && (
         <nav style={{ position: 'fixed', bottom: '16px', left: '50%', transform: 'translateX(-50%)', width: '90%', maxWidth: '400px', backgroundColor: '#18181bfb', backdropFilter: 'blur(8px)', border: '1px solid #27272a', padding: '6px', borderRadius: '16px', display: 'flex', justifyContent: 'space-around', alignItems: 'center', zIndex: 30, boxShadow: '0 10px 25px rgba(0,0,0,0.5)' }}>
           <button 
