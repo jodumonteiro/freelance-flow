@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export default function PricingSection() {
   const handleSubscribe = (plan: 'starter' | 'growth') => {
